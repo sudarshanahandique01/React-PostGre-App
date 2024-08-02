@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build:
+      context: ./my-backend
+    ports:
+      - "14000:14000"
+    depends_on:
+      - postgres
+
+  react:
+    build:
+      context: .
+    ports:
+      - "13001:13000"
+    depends_on:
+      - backend
